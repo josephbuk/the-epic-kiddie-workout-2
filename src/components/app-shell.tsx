@@ -1,12 +1,23 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { completeAssignment } from "@/lib/api.functions";
+import { flushCompletionQueue } from "@/lib/offline-cache";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const complete = useServerFn(completeAssignment);
+
+  useEffect(() => {
+    const flush = () => flushCompletionQueue((id) => complete({ data: { id } }));
+    flush();
+    window.addEventListener("online", flush);
+    return () => window.removeEventListener("online", flush);
+  }, [complete]);
 
   const isKidMode = pathname.startsWith("/play/") && pathname !== "/play";
 
