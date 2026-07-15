@@ -14,7 +14,173 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assignments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          kid_id: string
+          scheduled_date: string
+          workout_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          kid_id: string
+          scheduled_date?: string
+          workout_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          kid_id?: string
+          scheduled_date?: string
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_kid_id_fkey"
+            columns: ["kid_id"]
+            isOneToOne: false
+            referencedRelation: "kids"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids: {
+        Row: {
+          age: number
+          avatar_color: string
+          created_at: string
+          id: string
+          name: string
+          parent_id: string
+        }
+        Insert: {
+          age: number
+          avatar_color?: string
+          created_at?: string
+          id?: string
+          name: string
+          parent_id: string
+        }
+        Update: {
+          age?: number
+          avatar_color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          parent_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      workout_exercises: {
+        Row: {
+          cue: string
+          duration_sec: number | null
+          emoji: string
+          id: string
+          name: string
+          ord: number
+          reps: number | null
+          rest_sec: number
+          workout_id: string
+        }
+        Insert: {
+          cue?: string
+          duration_sec?: number | null
+          emoji?: string
+          id?: string
+          name: string
+          ord: number
+          reps?: number | null
+          rest_sec?: number
+          workout_id: string
+        }
+        Update: {
+          cue?: string
+          duration_sec?: number | null
+          emoji?: string
+          id?: string
+          name?: string
+          ord?: number
+          reps?: number | null
+          rest_sec?: number
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_exercises_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workouts: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty: string
+          duration_min: number
+          emoji: string
+          focus: string
+          id: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          difficulty: string
+          duration_min: number
+          emoji?: string
+          focus: string
+          id?: string
+          slug: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty?: string
+          duration_min?: number
+          emoji?: string
+          focus?: string
+          id?: string
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
