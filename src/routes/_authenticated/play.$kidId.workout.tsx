@@ -4,6 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { getAssignmentWithExercises, completeAssignment } from "@/lib/api.functions";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import {
+  saveAssignment,
+  loadAssignment,
+  queueCompletion,
+  flushCompletionQueue,
+} from "@/lib/offline-cache";
 
 export const Route = createFileRoute("/_authenticated/play/$kidId/workout")({
   validateSearch: z.object({ a: z.string().uuid() }),
@@ -19,10 +25,44 @@ function Runner() {
   const navigate = useNavigate();
   const fn = useServerFn(getAssignmentWithExercises);
   const complete = useServerFn(completeAssignment);
+  const [offline, setOffline] = useState(
+    typeof navigator !== "undefined" ? !navigator.onLine : false,
+  );
   const { data } = useQuery({
     queryKey: ["assignment", assignmentId],
-    queryFn: () => fn({ data: { id: assignmentId } }),
+    queryFn: async () => {
+      try {
+        const fresh = await fn({ data: { id: assignmentId } });
+        saveAssignment(assignmentId, fresh);
+        return fresh;
+      } catch (err) {
+        const cached = loadAssignment<Awaited<ReturnType<typeof fn>>>(assignmentId);
+        if (cached) {
+          setOffline(true);
+          return cached;
+        }
+        throw err;
+      }
+    },
+    initialData: () =>
+      loadAssignment<Awaited<ReturnType<typeof fn>>>(assignmentId) ?? undefined,
+    staleTime: 0,
+    retry: false,
   });
+
+  useEffect(() => {
+    const onOnline = () => {
+      setOffline(false);
+      flushCompletionQueue((id) => complete({ data: { id } }));
+    };
+    const onOffline = () => setOffline(true);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    return () => {
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
+  }, [complete]);
 
   const exercises = data?.exercises ?? [];
   const [idx, setIdx] = useState(0);
@@ -69,9 +109,13 @@ function Runner() {
 
   useEffect(() => {
     if (phase === "done") {
-      complete({ data: { id: assignmentId } }).finally(() => {
-        navigate({ to: "/play/$kidId/done", params: { kidId } });
-      });
+      complete({ data: { id: assignmentId } })
+        .catch(() => {
+          queueCompletion(assignmentId);
+        })
+        .finally(() => {
+          navigate({ to: "/play/$kidId/done", params: { kidId } });
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
@@ -85,6 +129,11 @@ function Runner() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-2xl flex-col px-6 py-6">
+        {offline && (
+          <div className="mb-3 rounded-full bg-secondary/20 px-4 py-2 text-center text-xs font-semibold uppercase tracking-widest text-secondary">
+            Offline — using saved workout
+          </div>
+        )}
         <div className="h-2 overflow-hidden rounded-full bg-muted">
           <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
         </div>
