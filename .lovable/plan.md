@@ -1,92 +1,68 @@
-## What we're building
+# Daily Push Reminders (FCM)
 
-A workout app for kids ages 5-12 where **parents pick the workouts** and **kids follow them**. Two connected experiences under one account: a parent side (assign workouts, watch progress) and a kid side (do today's workout, earn streaks). Ladder-inspired visual language: dark background, bold uppercase display type, high-contrast athletic feel — softened for kids with a bright accent color, rounded cards, and playful exercise illustrations.
+Both parent and kid get a browser push notification at a fixed daily time when there's an incomplete workout assignment.
 
-## Core flows
+## What you'll get
 
-**Parent (account owner)**
+- A "Reminders" section in the parent dashboard where the parent:
+  - Enables push on this device (grants permission, registers a token)
+  - Picks a daily reminder time (e.g. 4:00 PM)
+  - Enables push for each kid on the kid's own device (via Play mode)
+- Every day at the chosen time, anyone with an open assignment gets a push:
+  - Parent: "Time for {Kid}'s workout"
+  - Kid: "Ready to move, {Name}? Today's workout is waiting"
+- Clicking the notification opens the app on the right screen.
 
-- Sign up / log in (email + password, Google)
-- Add one or more kids to their account (name, age 5-12, avatar)
-- Browse a workout library (bodyweight routines, ~1 min-1 hr  tagged by focus: full body, strength, cardio, flexibility)
-- Assign a workout to a kid for a specific day (or a weekly plan)
-- See each kid's streak, completed workouts, and minutes moved
+## What I need from you (Firebase setup)
 
-**Kid (uses parent's device, picks their profile)**
+FCM (Firebase Cloud Messaging) is Google's free push service. It requires a Firebase project. I'll walk you through:
 
-- Tap their avatar on a profile picker (no separate password — parent-managed)
-- See "Today's Workout" assigned by parent
-- Run the guided workout: exercise name, illustration, timer or rep count, rest between sets, encouraging cues
-- Finish screen: confetti, streak +1, "Great job!" summary
-- History tab: calendar of completed days, current streak, total minutes
+1. Create a free Firebase project at console.firebase.google.com
+2. Add a **Web App**, copy the config (apiKey, projectId, messagingSenderId, appId)
+3. Cloud Messaging → generate a **VAPID key pair** (Web Push certificate)
+4. Project Settings → Service Accounts → generate a **private key** JSON (server credentials for sending)
 
-## Screens / routes
+You'll paste these into secure secret prompts I'll open. Nothing goes in the code.
 
-```text
-/                          Marketing landing (hero, "for parents & kids 5-12")
-/auth                      Sign in / sign up (parent)
-/_authenticated
-  /dashboard               Parent home: kids list, quick assign
-  /kids/new                Add a kid
-  /kids/$kidId             Kid detail: assigned plan, progress, history
-  /library                 Workout library (browse + filter)
-  /library/$workoutId      Workout detail + assign to kid
-  /play                    Kid profile picker (choose avatar)
-  /play/$kidId             Kid home: today's workout + streak
-  /play/$kidId/workout     Guided workout runner (fullscreen)
-  /play/$kidId/done        Completion celebration
-```
+## Technical details
 
-## Data model (Lovable Cloud)
+**New table** `push_subscriptions`
+- owner_kind: 'parent' | 'kid'
+- owner_id (parent user_id, or kid_id)
+- parent_id (for RLS)
+- fcm_token, user_agent, created_at
+- RLS: parent manages rows where parent_id = auth.uid()
 
-- `profiles` — parent profile (linked to auth.users)
-- `kids` — id, parent_id, name, age, avatar_key
-- `workouts` — id, title, description, focus_tags, duration_min, difficulty (seeded catalog, ~15 starter workouts)
-- `workout_exercises` — id, workout_id, order, name, illustration_key, duration_sec or reps, rest_sec, cue_text
-- `assignments` — id, kid_id, workout_id, scheduled_date, status (assigned/completed), completed_at
-- `user_roles` — separate roles table (parent role) per the roles pattern
+**New column** on `profiles`: `reminder_time` (time, default 16:00), `reminders_enabled` (bool)
 
-RLS: parents can only read/write their own kids, assignments, and completions. Workouts table is publicly readable.
+**Client**
+- `firebase-messaging-sw.js` service worker in `public/` (messaging only — separate from any app-shell PWA)
+- Firebase init in `src/integrations/firebase/client.ts` using VITE_ vars
+- "Enable reminders" button in parent dashboard + kid profile: requests permission, gets FCM token, saves via server fn
+- Time picker bound to profile
 
-## Design direction
+**Server**
+- `src/lib/push.functions.ts`: register/unregister token, save reminder time
+- `src/routes/api/public/hooks/send-reminders.ts`: cron endpoint that queries incomplete assignments for kids whose parent's `reminder_time` matches "now" (hourly cron, matches on hour+minute window), signs a JWT with the service account, POSTs to FCM HTTP v1 API
+- Secrets: FCM_SERVICE_ACCOUNT_JSON, plus VITE_FIREBASE_* config values
 
-Ladder-inspired, kid-adapted:
+**Cron**: pg_cron every 5 min → calls the endpoint with anon key header. Endpoint filters recipients whose local reminder time falls in the current 5-min window.
 
-- **Background:** near-black (`oklch(0.18 0.02 260)`)
-- **Foreground:** off-white
-- **Accent (primary):** electric lime/yellow-green — bold, energetic, differentiates from adult Ladder red
-- **Secondary accent:** warm orange for streaks/celebrations
-- **Type:** bold uppercase display for headings (a strong sans like Archivo Black or Anton via Google Fonts), clean geometric sans for body (Inter)
-- **Shapes:** rounded-2xl cards, chunky buttons, big timer numerals
-- **Motion:** snappy transitions, timer count-down pulse, confetti on completion
+## Out of scope
 
-All colors as semantic tokens in `src/styles.css` (oklch).
-
-## Technical notes
-
-- TanStack Start file-based routes under `src/routes/`; use `_authenticated/` layout for parent-only pages
-- Kid `/play/*` routes live under `_authenticated/` too (parent must be signed in on the device); kid selects their profile via avatar picker, no separate auth
-- Server functions (`createServerFn` + `requireSupabaseAuth`) for all reads/writes; RLS enforced
-- Seed the workout catalog in the same migration that creates the schema
-- Illustrations: generate a small set of exercise illustrations (jumping jacks, squats, push-ups, plank, etc.) as PNGs in `src/assets/`
-- Timer/runner is client-side React state; store only the final completion server-side
-- Head metadata: real app title/description on `__root.tsx` and each route
-
-## Out of scope (unless you ask)
-
-- In-app payments / subscriptions
-- Video content (using illustrations + timers)
-- Social features between kids
-- Wearable / heart-rate integration
-- Native mobile app (this is a responsive web app)
+- iOS Safari push requires the user to first "Add to Home Screen" (Apple limitation). I'll show a hint but can't work around it.
+- No SMS/email fallback.
+- No per-assignment custom times (daily fixed only, per your choice).
 
 ## Build order
 
-1. Enable Lovable Cloud, set up auth (email + Google), profiles + user_roles
-2. Migration: kids, workouts, workout_exercises, assignments + seed catalog
-3. Design tokens + typography in `src/styles.css`
-4. Landing page + auth
-5. Parent: dashboard, add kid, workout library, assign flow
-6. Kid: profile picker, today's workout, guided runner, completion screen
-7. Progress: kid detail page for parent, history for kid
-8. Polish: illustrations, motion, empty states
+1. Ask for Firebase config + service account (secrets)
+2. Migration: `push_subscriptions` + profile columns
+3. Firebase client + messaging service worker
+4. UI: enable-reminders buttons + time picker
+5. Server fns for token registration
+6. Cron endpoint + FCM sender
+7. Schedule pg_cron
+8. Test end-to-end
+
+Ready to start? First step is you creating the Firebase project and grabbing those 4 things — I'll open the secret prompts once you say go.
