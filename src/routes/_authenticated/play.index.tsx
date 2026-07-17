@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listKids } from "@/lib/api.functions";
 
-export const Route = createFileRoute("/_authenticated/play")({
+export const Route = createFileRoute("/_authenticated/play/")({
   head: () => ({ meta: [{ title: "Who's playing? — Kids Get Movin'" }] }),
   component: Play,
 });
