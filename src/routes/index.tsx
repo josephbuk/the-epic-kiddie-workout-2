@@ -9,7 +9,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="font-display text-2xl tracking-tight">RUNGO</div>
+        <div className="font-display text-2xl tracking-tight">KIDS GET MOVIN'</div>
         <div className="flex gap-3">
           <Link
             to="/auth"
@@ -71,7 +71,7 @@ function Index() {
       </section>
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Rungo. Move like a boss.
+        © {new Date().getFullYear()} Kids Get Movin'. Move like a boss.
       </footer>
     </div>
   );

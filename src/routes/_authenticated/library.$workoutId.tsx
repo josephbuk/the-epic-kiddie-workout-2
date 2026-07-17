@@ -5,7 +5,7 @@ import { getWorkout, listKids, assignWorkout } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/library/$workoutId")({
-  head: () => ({ meta: [{ title: "Workout — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Workout — Kids Get Movin'" }] }),
   component: WorkoutDetail,
 });
 

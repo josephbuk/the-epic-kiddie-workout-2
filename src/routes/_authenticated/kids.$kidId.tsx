@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getKid, listAssignmentsForKid, kidStats } from "@/lib/api.functions";
 
 export const Route = createFileRoute("/_authenticated/kids/$kidId")({
-  head: () => ({ meta: [{ title: "Kid — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Kid — Kids Get Movin'" }] }),
   component: KidDetail,
 });
 

@@ -6,7 +6,7 @@ import { createKid } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/kids/new")({
-  head: () => ({ meta: [{ title: "Add kid — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Add kid — Kids Get Movin'" }] }),
   component: NewKid,
 });
 

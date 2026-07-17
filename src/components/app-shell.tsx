@@ -42,7 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/dashboard" className="font-display text-2xl">RUNGO</Link>
+          <Link to="/dashboard" className="font-display text-2xl">KIDS GET MOVIN'</Link>
           <nav className="flex items-center gap-1">
             {nav.map((n) => {
               const active = pathname === n.to || pathname.startsWith(n.to + "/");

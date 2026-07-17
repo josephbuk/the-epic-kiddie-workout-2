@@ -5,7 +5,7 @@ import { getKid, kidStats } from "@/lib/api.functions";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/play/$kidId/done")({
-  head: () => ({ meta: [{ title: "Nice work! — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Nice work! — Kids Get Movin'" }] }),
   component: Done,
 });
 
