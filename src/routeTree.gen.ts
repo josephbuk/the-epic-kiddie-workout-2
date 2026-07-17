@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedPlayRouteImport } from './routes/_authenticated/play'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPlayIndexRouteImport } from './routes/_authenticated/play.index'
 import { Route as AuthenticatedPlayKidIdRouteImport } from './routes/_authenticated/play.$kidId'
 import { Route as AuthenticatedLibraryWorkoutIdRouteImport } from './routes/_authenticated/library.$workoutId'
 import { Route as AuthenticatedKidsNewRouteImport } from './routes/_authenticated/kids.new'
@@ -36,11 +36,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedPlayRoute = AuthenticatedPlayRouteImport.update({
-  id: '/play',
-  path: '/play',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
@@ -51,10 +46,15 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlayIndexRoute = AuthenticatedPlayIndexRouteImport.update({
+  id: '/play/',
+  path: '/play/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPlayKidIdRoute = AuthenticatedPlayKidIdRouteImport.update({
-  id: '/$kidId',
-  path: '/$kidId',
-  getParentRoute: () => AuthenticatedPlayRoute,
+  id: '/play/$kidId',
+  path: '/play/$kidId',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLibraryWorkoutIdRoute =
   AuthenticatedLibraryWorkoutIdRouteImport.update({
@@ -90,11 +90,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
-  '/play': typeof AuthenticatedPlayRouteWithChildren
   '/kids/$kidId': typeof AuthenticatedKidsKidIdRoute
   '/kids/new': typeof AuthenticatedKidsNewRoute
   '/library/$workoutId': typeof AuthenticatedLibraryWorkoutIdRoute
   '/play/$kidId': typeof AuthenticatedPlayKidIdRouteWithChildren
+  '/play/': typeof AuthenticatedPlayIndexRoute
   '/play/$kidId/done': typeof AuthenticatedPlayKidIdDoneRoute
   '/play/$kidId/workout': typeof AuthenticatedPlayKidIdWorkoutRoute
 }
@@ -103,11 +103,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
-  '/play': typeof AuthenticatedPlayRouteWithChildren
   '/kids/$kidId': typeof AuthenticatedKidsKidIdRoute
   '/kids/new': typeof AuthenticatedKidsNewRoute
   '/library/$workoutId': typeof AuthenticatedLibraryWorkoutIdRoute
   '/play/$kidId': typeof AuthenticatedPlayKidIdRouteWithChildren
+  '/play': typeof AuthenticatedPlayIndexRoute
   '/play/$kidId/done': typeof AuthenticatedPlayKidIdDoneRoute
   '/play/$kidId/workout': typeof AuthenticatedPlayKidIdWorkoutRoute
 }
@@ -118,11 +118,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
-  '/_authenticated/play': typeof AuthenticatedPlayRouteWithChildren
   '/_authenticated/kids/$kidId': typeof AuthenticatedKidsKidIdRoute
   '/_authenticated/kids/new': typeof AuthenticatedKidsNewRoute
   '/_authenticated/library/$workoutId': typeof AuthenticatedLibraryWorkoutIdRoute
   '/_authenticated/play/$kidId': typeof AuthenticatedPlayKidIdRouteWithChildren
+  '/_authenticated/play/': typeof AuthenticatedPlayIndexRoute
   '/_authenticated/play/$kidId/done': typeof AuthenticatedPlayKidIdDoneRoute
   '/_authenticated/play/$kidId/workout': typeof AuthenticatedPlayKidIdWorkoutRoute
 }
@@ -133,11 +133,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/library'
-    | '/play'
     | '/kids/$kidId'
     | '/kids/new'
     | '/library/$workoutId'
     | '/play/$kidId'
+    | '/play/'
     | '/play/$kidId/done'
     | '/play/$kidId/workout'
   fileRoutesByTo: FileRoutesByTo
@@ -146,11 +146,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/library'
-    | '/play'
     | '/kids/$kidId'
     | '/kids/new'
     | '/library/$workoutId'
     | '/play/$kidId'
+    | '/play'
     | '/play/$kidId/done'
     | '/play/$kidId/workout'
   id:
@@ -160,11 +160,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/library'
-    | '/_authenticated/play'
     | '/_authenticated/kids/$kidId'
     | '/_authenticated/kids/new'
     | '/_authenticated/library/$workoutId'
     | '/_authenticated/play/$kidId'
+    | '/_authenticated/play/'
     | '/_authenticated/play/$kidId/done'
     | '/_authenticated/play/$kidId/workout'
   fileRoutesById: FileRoutesById
@@ -198,13 +198,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/play': {
-      id: '/_authenticated/play'
-      path: '/play'
-      fullPath: '/play'
-      preLoaderRoute: typeof AuthenticatedPlayRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/library': {
       id: '/_authenticated/library'
       path: '/library'
@@ -219,12 +212,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/play/': {
+      id: '/_authenticated/play/'
+      path: '/play'
+      fullPath: '/play/'
+      preLoaderRoute: typeof AuthenticatedPlayIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/play/$kidId': {
       id: '/_authenticated/play/$kidId'
-      path: '/$kidId'
+      path: '/play/$kidId'
       fullPath: '/play/$kidId'
       preLoaderRoute: typeof AuthenticatedPlayKidIdRouteImport
-      parentRoute: typeof AuthenticatedPlayRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/library/$workoutId': {
       id: '/_authenticated/library/$workoutId'
@@ -291,31 +291,22 @@ const AuthenticatedPlayKidIdRouteWithChildren =
     AuthenticatedPlayKidIdRouteChildren,
   )
 
-interface AuthenticatedPlayRouteChildren {
-  AuthenticatedPlayKidIdRoute: typeof AuthenticatedPlayKidIdRouteWithChildren
-}
-
-const AuthenticatedPlayRouteChildren: AuthenticatedPlayRouteChildren = {
-  AuthenticatedPlayKidIdRoute: AuthenticatedPlayKidIdRouteWithChildren,
-}
-
-const AuthenticatedPlayRouteWithChildren =
-  AuthenticatedPlayRoute._addFileChildren(AuthenticatedPlayRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
-  AuthenticatedPlayRoute: typeof AuthenticatedPlayRouteWithChildren
   AuthenticatedKidsKidIdRoute: typeof AuthenticatedKidsKidIdRoute
   AuthenticatedKidsNewRoute: typeof AuthenticatedKidsNewRoute
+  AuthenticatedPlayKidIdRoute: typeof AuthenticatedPlayKidIdRouteWithChildren
+  AuthenticatedPlayIndexRoute: typeof AuthenticatedPlayIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
-  AuthenticatedPlayRoute: AuthenticatedPlayRouteWithChildren,
   AuthenticatedKidsKidIdRoute: AuthenticatedKidsKidIdRoute,
   AuthenticatedKidsNewRoute: AuthenticatedKidsNewRoute,
+  AuthenticatedPlayKidIdRoute: AuthenticatedPlayKidIdRouteWithChildren,
+  AuthenticatedPlayIndexRoute: AuthenticatedPlayIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
