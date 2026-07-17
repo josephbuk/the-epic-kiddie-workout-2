@@ -5,7 +5,7 @@ import { listKids, deleteKid } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Kids — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Kids — Kids Get Movin'" }] }),
   component: Dashboard,
 });
 

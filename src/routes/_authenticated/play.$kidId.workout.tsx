@@ -13,7 +13,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/play/$kidId/workout")({
   validateSearch: z.object({ a: z.string().uuid() }),
-  head: () => ({ meta: [{ title: "Workout — Rungo" }] }),
+  head: () => ({ meta: [{ title: "Workout — Kids Get Movin'" }] }),
   component: Runner,
 });
 

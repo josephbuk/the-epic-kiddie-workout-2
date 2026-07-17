@@ -7,8 +7,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Rungo" },
-      { name: "description", content: "Sign in to Rungo to pick workouts for your kids." },
+      { title: "Sign in — Kids Get Movin'" },
+      { name: "description", content: "Sign in to Kids Get Movin' to pick workouts for your kids." },
     ],
   }),
   component: AuthPage,
@@ -66,7 +66,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
       <div className="w-full max-w-md">
-        <Link to="/" className="mb-8 block text-center font-display text-3xl">RUNGO</Link>
+        <Link to="/" className="mb-8 block text-center font-display text-3xl">KIDS GET MOVIN'</Link>
         <div className="rounded-3xl border border-border bg-card p-8">
           <h1 className="font-display text-3xl uppercase">
             {mode === "signin" ? "Welcome back" : "Create account"}

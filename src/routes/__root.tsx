@@ -79,9 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rungo — Kid workouts, parent-picked" },
+      { title: "Kids Get Movin' — Kid workouts, parent-picked" },
       { name: "description", content: "A dark, bold workout app for kids 5–12. Parents pick the routines, kids follow along and build streaks." },
-      { property: "og:title", content: "Rungo — Kid workouts, parent-picked" },
+      { property: "og:title", content: "Kids Get Movin' — Kid workouts, parent-picked" },
       { property: "og:description", content: "Parents pick guided workouts. Kids press play, follow along, and celebrate streaks." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
