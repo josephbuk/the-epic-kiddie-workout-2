@@ -39,6 +39,8 @@ function AuthPage() {
         });
         if (error) throw error;
         toast.success("Account created — signing you in…");
+        navigate({ to: "/library", replace: true });
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
