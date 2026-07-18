@@ -25,9 +25,9 @@ function KidHome() {
   return (
     <div className="mx-auto min-h-screen max-w-2xl px-6 py-8">
       <div className="flex items-center justify-between">
-        <Link to="/play" className="text-sm text-muted-foreground hover:text-foreground">\u2190 Switch kid</Link>
+        <Link to="/play" className="text-sm text-muted-foreground hover:text-foreground">← Switch kid</Link>
         <div className="rounded-full bg-primary px-4 py-1 text-xs font-semibold uppercase text-primary-foreground">
-          \ud83d\udd25 {stats?.streak ?? 0} day streak
+          🔥 {stats?.streak ?? 0} day streak
         </div>
       </div>
 
@@ -44,7 +44,7 @@ function KidHome() {
           </p>
           {today.completed_at ? (
             <div className="mt-6 rounded-2xl bg-primary/10 p-4 text-center">
-              <p className="font-display text-2xl uppercase text-primary">\u2713 Done today!</p>
+              <p className="font-display text-2xl uppercase text-primary">✓ Done today!</p>
               <p className="text-sm text-muted-foreground">Come back tomorrow.</p>
             </div>
           ) : (
@@ -54,7 +54,7 @@ function KidHome() {
               search={{ a: today.id }}
               className="mt-6 block rounded-full bg-primary py-5 text-center font-display text-2xl uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30"
             >
-              \u25b6 Start workout
+              ▶ Start workout
             </Link>
           )}
         </div>
