@@ -120,7 +120,7 @@ function Runner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  if (!data) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading\u2026</div>;
+  if (!data) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading…</div>;
   if (!current) return null;
 
   const isRest = phase === "rest";
@@ -157,7 +157,7 @@ function Runner() {
         )}
 
         <div className={`mt-10 font-display text-[9rem] leading-none ${isRest ? "text-secondary" : "text-primary"}`}>
-          {current.duration_sec || isRest ? remaining : `\u00d7${current.reps}`}
+          {current.duration_sec || isRest ? remaining : `×${current.reps}`}
         </div>
         {!current.duration_sec && !isRest && (
           <p className="text-sm uppercase tracking-widest text-muted-foreground">reps \u2014 tap next when done</p>
@@ -183,7 +183,7 @@ function Runner() {
             }}
             className="rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase text-primary-foreground"
           >
-            Skip \u2192
+            Skip →
           </button>
           <button
             onClick={() => navigate({ to: "/play/$kidId", params: { kidId } })}

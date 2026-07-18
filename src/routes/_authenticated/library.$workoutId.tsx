@@ -53,7 +53,7 @@ function WorkoutDetail() {
                 <p className="font-semibold">{ex.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {ex.duration_sec ? `${ex.duration_sec}s` : `${ex.reps} reps`}
-                  {ex.rest_sec ? ` \u00b7 ${ex.rest_sec}s rest` : ""}
+                  {ex.rest_sec ? ` · ${ex.rest_sec}s rest` : ""}
                 </p>
               </div>
             </li>
@@ -83,7 +83,7 @@ function WorkoutDetail() {
                   className="flex w-full items-center justify-between rounded-2xl border border-border px-4 py-3 hover:border-primary disabled:opacity-60"
                 >
                   <span className="font-semibold">{k.name}</span>
-                  <span className="text-xs uppercase text-muted-foreground">Assign today \u2192</span>
+                  <span className="text-xs uppercase text-muted-foreground">Assign today →</span>
                 </button>
               </li>
             ))}

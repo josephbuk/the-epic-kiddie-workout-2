@@ -40,7 +40,7 @@ function KidHome() {
           <h2 className="mt-4 font-display text-4xl uppercase">{w.title}</h2>
           <p className="mt-2 text-muted-foreground">{w.description}</p>
           <p className="mt-4 text-sm uppercase tracking-widest text-muted-foreground">
-            {w.duration_min} min \u00b7 {w.focus}
+            {w.duration_min} min · {w.focus}
           </p>
           {today.completed_at ? (
             <div className="mt-6 rounded-2xl bg-primary/10 p-4 text-center">
