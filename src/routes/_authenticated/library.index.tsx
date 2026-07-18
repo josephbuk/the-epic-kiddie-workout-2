@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listWorkouts } from "@/lib/api.functions";
 import { useState } from "react";
 
-export const Route = createFileRoute("/_authenticated/library")({
+export const Route = createFileRoute("/_authenticated/library/")({
   head: () => ({ meta: [{ title: "Workout library — Kids Get Movin'" }] }),
   component: Library,
 });
