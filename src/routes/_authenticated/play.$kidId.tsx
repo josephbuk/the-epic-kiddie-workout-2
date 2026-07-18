@@ -54,7 +54,7 @@ function KidHome() {
               search={{ a: today.id }}
               className="mt-6 block rounded-full bg-primary py-5 text-center font-display text-2xl uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30"
             >
-              ▶ Start workout
+              I DID IT
             </Link>
           )}
         </div>
