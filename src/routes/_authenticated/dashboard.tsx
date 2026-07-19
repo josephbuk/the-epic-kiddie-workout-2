@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listKids, deleteKid } from "@/lib/api.functions";
 import { toast } from "sonner";
@@ -19,7 +19,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 function Dashboard() {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const fetchKids = useServerFn(listKids);
   const remove = useServerFn(deleteKid);
   const { data: kids = [], isLoading } = useQuery({
@@ -29,9 +29,19 @@ function Dashboard() {
 
   const del = useMutation({
     mutationFn: (id: string) => remove({ data: { id } }),
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: ["kids"] });
+      const prev = queryClient.getQueryData<typeof kids>(["kids"]);
+      queryClient.setQueryData<typeof kids>(["kids"], (old = []) => old.filter((k) => k.id !== id));
+      return { prev };
+    },
     onSuccess: () => {
       toast.success("Kid removed");
-      router.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["kids"] });
+    },
+    onError: (e: Error, _id, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(["kids"], ctx.prev);
+      toast.error(e.message || "Failed to remove kid");
     },
   });
 
