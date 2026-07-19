@@ -36,6 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/dashboard", label: "Kids" },
     { to: "/library", label: "Library" },
     { to: "/play", label: "Play mode" },
+    { to: "/settings", label: "Grown-ups" },
   ] as const;
 
   return (

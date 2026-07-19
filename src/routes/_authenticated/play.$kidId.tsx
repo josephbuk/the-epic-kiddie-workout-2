@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
+import { validatePasscode } from "@/lib/passcode";
 
 export const Route = createFileRoute("/_authenticated/play/$kidId")({
   head: () => ({ meta: [{ title: "Today — Kids Get Movin'" }] }),
@@ -45,7 +46,8 @@ function KidHome() {
     e.preventDefault();
     if (!passKey) return;
     if (mode === "set") {
-      if (entered.length < 4) return setError("Use at least 4 digits");
+      const v = validatePasscode(entered);
+      if (v) return setError(v);
       if (entered !== confirmPass) return setError("Passcodes don't match");
       localStorage.setItem(passKey, entered);
     } else {
