@@ -80,7 +80,7 @@ function Dashboard() {
               <div className={`flex h-16 w-16 items-center justify-center rounded-2xl font-display text-2xl ${COLOR_MAP[k.avatar_color] ?? COLOR_MAP.lime}`}>
                 {k.name.slice(0, 1).toUpperCase()}
               </div>
-              <h3 className="mt-4 font-display text-2xl uppercase">{k.name}</h3>
+              <h2 className="mt-4 font-display text-2xl uppercase">{k.name}</h2>
               <p className="text-sm text-muted-foreground">Age {k.age}</p>
               <div className="mt-4 flex gap-2">
                 <Link
@@ -101,9 +101,9 @@ function Dashboard() {
                     if (confirm(`Remove ${k.name}?`)) del.mutate(k.id);
                   }}
                   className="rounded-full border border-border px-3 text-xs text-muted-foreground hover:text-destructive"
-                  aria-label="Delete"
+                  aria-label={`Delete ${k.name}`}
                 >
-                  ×
+                  <span aria-hidden="true">×</span>
                 </button>
               </div>
             </div>
