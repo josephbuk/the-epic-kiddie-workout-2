@@ -5,7 +5,29 @@ import { getWorkout, listKids, assignWorkout } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/library/$workoutId")({
-  head: () => ({ meta: [{ title: "Workout — Kids Get Movin'" }] }),
+  loader: async ({ params, context }) =>
+    context.queryClient.ensureQueryData({
+      queryKey: ["workout", params.workoutId],
+      queryFn: () => getWorkout({ data: { id: params.workoutId } }),
+    }),
+  head: ({ params, loaderData }) => {
+    const title = loaderData?.workout?.title ?? "Workout";
+    const desc = loaderData?.workout?.description
+      ? `${loaderData.workout.description} A ${loaderData.workout.duration_min}-minute ${loaderData.workout.focus} workout for kids.`
+      : "See exactly what's in this kid workout and assign it for today.";
+    const url = `https://workyourkidout.lovable.app/library/${params.workoutId}`;
+    return {
+      meta: [
+        { title: `${title} — Kids Get Movin'` },
+        { name: "description", content: desc.slice(0, 160) },
+        { property: "og:title", content: `${title} — Kids Get Movin'` },
+        { property: "og:description", content: desc.slice(0, 160) },
+        { property: "og:url", content: url },
+        { name: "robots", content: "noindex" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: WorkoutDetail,
 });
 
