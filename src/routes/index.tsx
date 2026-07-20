@@ -31,8 +31,7 @@ function Index() {
           For parents & kids 5–12
         </p>
         <h1 className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl">
-          You pick.<br />
-          <span className="text-primary">They move.</span>
+          Guided workouts for kids that <span className="text-primary">parents pick</span>
         </h1>
         <p className="mt-8 max-w-xl text-lg text-muted-foreground">
           Parent-picked guided workouts your kid actually wants to press play on. Bodyweight
@@ -54,8 +53,10 @@ function Index() {
         </div>
       </section>
 
-      <section id="how" className="border-t border-border bg-card/40">
-        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-20 md:grid-cols-3">
+      <section id="how" className="border-t border-border bg-card/40" aria-labelledby="how-heading">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <h2 id="how-heading" className="font-display text-3xl uppercase sm:text-4xl">How it works</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
           {[
             { n: "01", t: "Add your kid", d: "Name, age, and a color. That's it." },
             { n: "02", t: "Pick a workout", d: "Browse the catalog. Assign it for today." },
@@ -67,6 +68,7 @@ function Index() {
               <p className="mt-2 text-muted-foreground">{s.d}</p>
             </div>
           ))}
+          </div>
         </div>
       </section>
 
