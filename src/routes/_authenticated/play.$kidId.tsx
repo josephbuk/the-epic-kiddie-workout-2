@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getKid, getTodayAssignment, kidStats } from "@/lib/api.functions";
+import { getKid, getTodayAssignment, kidStats, getWorkout } from "@/lib/api.functions";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,8 +18,10 @@ function KidHome() {
   const kidFn = useServerFn(getKid);
   const todayFn = useServerFn(getTodayAssignment);
   const statsFn = useServerFn(kidStats);
+  const workoutFn = useServerFn(getWorkout);
   const navigate = useNavigate();
   const [gateOpen, setGateOpen] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
   const [entered, setEntered] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<"enter" | "set">("enter");
@@ -65,6 +67,7 @@ function KidHome() {
   if (!kid) return null;
 
   const w = today?.workout && (Array.isArray(today.workout) ? today.workout[0] : today.workout);
+  const workoutId = w?.id as string | undefined;
 
   return (
     <div className="mx-auto min-h-screen max-w-2xl px-6 py-8">
@@ -92,13 +95,25 @@ function KidHome() {
               <p className="text-sm text-muted-foreground">Come back tomorrow.</p>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={openGate}
-              className="mt-6 block w-full rounded-full bg-primary py-5 text-center font-display text-2xl uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30"
-            >
-              I DID IT
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setShowSteps((s) => !s)}
+                className="mt-6 block w-full rounded-full border border-border py-3 text-center font-display text-sm uppercase tracking-widest hover:bg-muted"
+              >
+                {showSteps ? "Hide steps" : "See the steps"}
+              </button>
+              {showSteps && workoutId && (
+                <StepsList workoutId={workoutId} workoutFn={workoutFn} />
+              )}
+              <button
+                type="button"
+                onClick={openGate}
+                className="mt-4 block w-full rounded-full bg-primary py-5 text-center font-display text-2xl uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30"
+              >
+                I DID IT
+              </button>
+            </>
           )}
         </div>
       ) : (
@@ -161,6 +176,40 @@ function KidHome() {
           </form>
         </div>
       )}
+    </div>
+  );
+}
+
+function StepsList({
+  workoutId,
+  workoutFn,
+}: {
+  workoutId: string;
+  workoutFn: (args: { data: { id: string } }) => Promise<{ exercises: Array<{ id: string; name: string; emoji: string; cue: string | null; reps: number | null; duration_sec: number | null; rest_sec: number | null }> }>;
+}) {
+  const { data } = useQuery({
+    queryKey: ["workout-steps", workoutId],
+    queryFn: () => workoutFn({ data: { id: workoutId } }),
+  });
+  if (!data) return <p className="mt-4 text-sm text-muted-foreground">Loading steps…</p>;
+  return (
+    <div className="mt-4 rounded-2xl border border-border bg-background/60 p-4">
+      <ol className="space-y-2">
+        {data.exercises.map((ex, i) => (
+          <li key={ex.id} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 text-left">
+            <div className="font-display text-lg text-primary">{String(i + 1).padStart(2, "0")}</div>
+            <div className="text-2xl">{ex.emoji}</div>
+            <div className="flex-1">
+              <p className="font-semibold">{ex.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {ex.duration_sec ? `${ex.duration_sec}s` : `${ex.reps} reps`}
+                {ex.rest_sec ? ` · ${ex.rest_sec}s rest` : ""}
+              </p>
+              {ex.cue && <p className="mt-1 text-xs text-muted-foreground">{ex.cue}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
