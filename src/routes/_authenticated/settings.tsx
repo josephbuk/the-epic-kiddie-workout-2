@@ -5,7 +5,16 @@ import { validatePasscode } from "@/lib/passcode";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Grown-ups — Kids Get Movin'" }] }),
+  head: () => ({
+    meta: [
+      { title: "Grown-ups settings — Kids Get Movin'" },
+      { name: "description", content: "Grown-ups area: verify your email and update or clear the parent passcode used to confirm workouts on Kids Get Movin'." },
+      { property: "og:title", content: "Grown-ups settings — Kids Get Movin'" },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/settings" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/settings" }],
+  }),
   component: SettingsPage,
 });
 
