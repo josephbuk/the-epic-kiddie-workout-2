@@ -9,7 +9,16 @@ import { useEffect } from "react";
 import { validatePasscode } from "@/lib/passcode";
 
 export const Route = createFileRoute("/_authenticated/play/$kidId")({
-  head: () => ({ meta: [{ title: "Today — Kids Get Movin'" }] }),
+  head: ({ params }) => ({
+    meta: [
+      { title: "Today's workout — Kids Get Movin'" },
+      { name: "description", content: "Today's guided workout for your kid — press play, follow the timer and cues, and keep the streak going." },
+      { property: "og:title", content: "Today's workout — Kids Get Movin'" },
+      { property: "og:url", content: `https://workyourkidout.lovable.app/play/${params.kidId}` },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: `https://workyourkidout.lovable.app/play/${params.kidId}` }],
+  }),
   component: KidHome,
 });
 
