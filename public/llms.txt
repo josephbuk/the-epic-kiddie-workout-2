@@ -1,0 +1,8 @@
+# Kids Get Movin'
+
+> Guided workout app for kids — parents assign short workouts, kids follow along with timers and cues, and build daily streaks.
+
+## Pages
+
+- [Home](/): Overview of Kids Get Movin' and how it works.
+- [Sign in / Sign up](/auth): Create a parent account or sign in.
