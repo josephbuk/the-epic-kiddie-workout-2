@@ -7,9 +7,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Kids Get Movin'" },
-      { name: "description", content: "Sign in to Kids Get Movin' to pick workouts for your kids." },
+      { title: "Sign in or sign up — Kids Get Movin'" },
+      { name: "description", content: "Sign in or create a parent account for Kids Get Movin' to pick guided workouts and track streaks for your kids." },
+      { property: "og:title", content: "Sign in or sign up — Kids Get Movin'" },
+      { property: "og:description", content: "Sign in or create a parent account to pick guided workouts and track streaks for your kids." },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/auth" },
     ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/auth" }],
   }),
   component: AuthPage,
 });
