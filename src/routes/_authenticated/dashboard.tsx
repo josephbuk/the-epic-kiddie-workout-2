@@ -5,7 +5,17 @@ import { listKids, deleteKid } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Kids — Kids Get Movin'" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your kids — Kids Get Movin'" },
+      { name: "description", content: "Manage your kids, assign guided workouts, and track their streaks from one dashboard." },
+      { property: "og:title", content: "Your kids — Kids Get Movin'" },
+      { property: "og:description", content: "Manage your kids, assign guided workouts, and track their streaks from one dashboard." },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/dashboard" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/dashboard" }],
+  }),
   component: Dashboard,
 });
 

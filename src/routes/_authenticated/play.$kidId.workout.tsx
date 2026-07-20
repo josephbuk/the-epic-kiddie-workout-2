@@ -13,7 +13,16 @@ import {
 
 export const Route = createFileRoute("/_authenticated/play/$kidId/workout")({
   validateSearch: z.object({ a: z.string().uuid() }),
-  head: () => ({ meta: [{ title: "Workout — Kids Get Movin'" }] }),
+  head: ({ params }) => ({
+    meta: [
+      { title: "Guided workout — Kids Get Movin'" },
+      { name: "description", content: "Guided workout runner with timers, rest breaks, and coach cues — press pause, skip, or quit any time." },
+      { property: "og:title", content: "Guided workout — Kids Get Movin'" },
+      { property: "og:url", content: `https://workyourkidout.lovable.app/play/${params.kidId}/workout` },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: `https://workyourkidout.lovable.app/play/${params.kidId}/workout` }],
+  }),
   component: Runner,
 });
 

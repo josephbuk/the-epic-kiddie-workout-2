@@ -5,7 +5,17 @@ import { listWorkouts } from "@/lib/api.functions";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/library/")({
-  head: () => ({ meta: [{ title: "Workout library — Kids Get Movin'" }] }),
+  head: () => ({
+    meta: [
+      { title: "Workout library — Kids Get Movin'" },
+      { name: "description", content: "Browse the full catalog of kid workouts by focus — warmup, cardio, strength, agility, and flexibility — and assign one for today." },
+      { property: "og:title", content: "Workout library — Kids Get Movin'" },
+      { property: "og:description", content: "Browse kid workouts by focus and assign one for today: warmup, cardio, strength, agility, and flexibility." },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/library" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/library" }],
+  }),
   component: Library,
 });
 

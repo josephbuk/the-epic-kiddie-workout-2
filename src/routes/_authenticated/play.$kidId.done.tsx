@@ -5,7 +5,16 @@ import { getKid, kidStats } from "@/lib/api.functions";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/play/$kidId/done")({
-  head: () => ({ meta: [{ title: "Nice work! — Kids Get Movin'" }] }),
+  head: ({ params }) => ({
+    meta: [
+      { title: "Nice work! — Kids Get Movin'" },
+      { name: "description", content: "Workout complete — celebrate the win and keep the daily streak going on Kids Get Movin'." },
+      { property: "og:title", content: "Nice work! — Kids Get Movin'" },
+      { property: "og:url", content: `https://workyourkidout.lovable.app/play/${params.kidId}/done` },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: `https://workyourkidout.lovable.app/play/${params.kidId}/done` }],
+  }),
   component: Done,
 });
 

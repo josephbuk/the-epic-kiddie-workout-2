@@ -6,7 +6,16 @@ import { createKid } from "@/lib/api.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/kids/new")({
-  head: () => ({ meta: [{ title: "Add kid — Kids Get Movin'" }] }),
+  head: () => ({
+    meta: [
+      { title: "Add a kid — Kids Get Movin'" },
+      { name: "description", content: "Add a kid to your Kids Get Movin' account — name, age, and avatar color — so you can start assigning workouts." },
+      { property: "og:title", content: "Add a kid — Kids Get Movin'" },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/kids/new" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/kids/new" }],
+  }),
   component: NewKid,
 });
 

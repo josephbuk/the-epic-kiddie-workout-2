@@ -2,6 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Kids Get Movin' — Guided workouts for kids, parent-picked" },
+      { name: "description", content: "Parent-picked guided workouts for kids ages 5–12. Bodyweight routines, big timers, and daily streaks kids actually want to press play on." },
+      { property: "og:title", content: "Kids Get Movin' — Guided workouts for kids, parent-picked" },
+      { property: "og:description", content: "Parent-picked guided workouts for kids ages 5–12. Bodyweight routines, big timers, and daily streaks kids actually want to press play on." },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/" }],
+  }),
   component: Index,
 });
 

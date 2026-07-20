@@ -4,7 +4,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { listKids } from "@/lib/api.functions";
 
 export const Route = createFileRoute("/_authenticated/play/")({
-  head: () => ({ meta: [{ title: "Who's playing? — Kids Get Movin'" }] }),
+  head: () => ({
+    meta: [
+      { title: "Who's playing? — Kids Get Movin'" },
+      { name: "description", content: "Pick which kid is playing today to load their assigned workout on Kids Get Movin'." },
+      { property: "og:title", content: "Who's playing? — Kids Get Movin'" },
+      { property: "og:url", content: "https://workyourkidout.lovable.app/play" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://workyourkidout.lovable.app/play" }],
+  }),
   component: Play,
 });
 
