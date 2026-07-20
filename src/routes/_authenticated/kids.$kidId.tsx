@@ -4,7 +4,26 @@ import { useServerFn } from "@tanstack/react-start";
 import { getKid, listAssignmentsForKid, kidStats } from "@/lib/api.functions";
 
 export const Route = createFileRoute("/_authenticated/kids/$kidId")({
-  head: () => ({ meta: [{ title: "Kid — Kids Get Movin'" }] }),
+  loader: async ({ params, context }) =>
+    context.queryClient.ensureQueryData({
+      queryKey: ["kid", params.kidId],
+      queryFn: () => getKid({ data: { id: params.kidId } }),
+    }),
+  head: ({ params, loaderData }) => {
+    const name = loaderData?.name ?? "Kid";
+    const url = `https://workyourkidout.lovable.app/kids/${params.kidId}`;
+    return {
+      meta: [
+        { title: `${name} — Kids Get Movin'` },
+        { name: "description", content: `Streaks, workout history, and assignments for ${name} on Kids Get Movin'.` },
+        { property: "og:title", content: `${name} — Kids Get Movin'` },
+        { property: "og:description", content: `Streaks, workout history, and assignments for ${name}.` },
+        { property: "og:url", content: url },
+        { name: "robots", content: "noindex" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: KidDetail,
 });
 
