@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getKid, getTodayAssignment, kidStats, getWorkout } from "@/lib/api.functions";
+import { getKid, getTodayAssignment, kidStats, getWorkout, completeAssignment } from "@/lib/api.functions";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +29,8 @@ function KidHome() {
   const todayFn = useServerFn(getTodayAssignment);
   const statsFn = useServerFn(kidStats);
   const workoutFn = useServerFn(getWorkout);
+  const completeFn = useServerFn(completeAssignment);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [gateOpen, setGateOpen] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
@@ -53,6 +56,15 @@ function KidHome() {
     setGateOpen(true);
   }
 
+  const completeMutation = useMutation({
+    mutationFn: (id: string) => completeFn({ data: { id } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["today", kidId] });
+      queryClient.invalidateQueries({ queryKey: ["stats", kidId] });
+      queryClient.invalidateQueries({ queryKey: ["assignments", kidId] });
+    },
+  });
+
   function submitGate(e: React.FormEvent) {
     e.preventDefault();
     if (!passKey) return;
@@ -66,7 +78,11 @@ function KidHome() {
       if (entered !== stored) return setError("Wrong passcode");
     }
     setGateOpen(false);
-    navigate({ to: "/play/$kidId/workout", params: { kidId }, search: { a: today!.id } });
+    if (today?.id) {
+      completeMutation.mutate(today.id, {
+        onSuccess: () => navigate({ to: "/play/$kidId/done", params: { kidId } }),
+      });
+    }
   }
 
   const { data: kid } = useQuery({ queryKey: ["kid", kidId], queryFn: () => kidFn({ data: { id: kidId } }) });
