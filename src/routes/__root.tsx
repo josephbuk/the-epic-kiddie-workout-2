@@ -79,12 +79,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kids Get Movin' — Kid workouts, parent-picked" },
-      { name: "description", content: "A dark, bold workout app for kids 5–12. Parents pick the routines, kids follow along and build streaks." },
-      { property: "og:title", content: "Kids Get Movin' — Kid workouts, parent-picked" },
-      { property: "og:description", content: "Parents pick guided workouts. Kids press play, follow along, and celebrate streaks." },
+      { title: "Kids Get Movin' — Guided workouts for kids, parent-picked" },
+      { name: "description", content: "Parent-picked guided workouts for kids ages 5–12. Bodyweight routines, big timers, and daily streaks kids actually want to press play on." },
+      { property: "og:title", content: "Kids Get Movin' — Guided workouts for kids, parent-picked" },
+      { property: "og:description", content: "Parent-picked guided workouts for kids ages 5–12. Bodyweight routines, big timers, and daily streaks kids actually want to press play on." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Kids Get Movin' — Guided workouts for kids, parent-picked" },
+      { name: "twitter:description", content: "Parent-picked guided workouts for kids ages 5–12. Bodyweight routines, big timers, and daily streaks kids actually want to press play on." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/25f9d5db-e092-4955-8ade-b653418f54bf/id-preview-811710ae--46dd48cb-3c62-46a5-9f7a-80177879a99f.lovable.app-1784576738946.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/25f9d5db-e092-4955-8ade-b653418f54bf/id-preview-811710ae--46dd48cb-3c62-46a5-9f7a-80177879a99f.lovable.app-1784576738946.png" },
     ],
     links: [
       {
