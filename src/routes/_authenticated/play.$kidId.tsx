@@ -106,7 +106,7 @@ function KidHome() {
       <h1 className="mt-8 font-display text-5xl uppercase">Hey {kid.name}!</h1>
       <p className="mt-1 text-muted-foreground">Today's workout is ready.</p>
 
-      {today && w ? (
+      {today && w && !today.completed_at ? (
         <div className="mt-8 rounded-3xl border border-border bg-card p-8">
           <div className="text-7xl">{w.emoji}</div>
           <h2 className="mt-4 font-display text-4xl uppercase">{w.title}</h2>
@@ -114,14 +114,7 @@ function KidHome() {
           <p className="mt-4 text-sm uppercase tracking-widest text-muted-foreground">
             {w.duration_min} min · {w.focus}
           </p>
-          {today.completed_at ? (
-            <div className="mt-6 rounded-2xl bg-primary/10 p-4 text-center">
-              <p className="font-display text-2xl uppercase text-primary">✓ Done today!</p>
-              <p className="text-sm text-muted-foreground">Come back tomorrow.</p>
-            </div>
-          ) : (
-            <>
-              <button
+          <button
                 type="button"
                 onClick={() => setShowSteps((s) => !s)}
                 className="mt-6 block w-full rounded-full border border-border py-3 text-center font-display text-sm uppercase tracking-widest hover:bg-muted"
@@ -138,8 +131,12 @@ function KidHome() {
               >
                 I DID IT
               </button>
-            </>
-          )}
+        </div>
+      ) : today && today.completed_at ? (
+        <div className="mt-8 rounded-3xl border border-border bg-card p-8 text-center">
+          <div className="text-7xl">🎉</div>
+          <p className="mt-4 font-display text-3xl uppercase text-primary">✓ Workout done!</p>
+          <p className="mt-2 text-muted-foreground">Total workouts: {stats?.total ?? 0}. Come back tomorrow!</p>
         </div>
       ) : (
         <div className="mt-8 rounded-3xl border border-dashed border-border p-12 text-center">
