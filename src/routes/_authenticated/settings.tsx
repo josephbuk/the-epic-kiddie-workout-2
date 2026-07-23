@@ -20,9 +20,8 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const [parentId, setParentId] = useState<string | null>(null);
-  const [parentEmail, setParentEmail] = useState<string | null>(null);
   const [unlocked, setUnlocked] = useState(false);
-  const [email, setEmail] = useState("");
+  const [currentPass, setCurrentPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
   const [err, setErr] = useState<string | null>(null);
@@ -30,7 +29,6 @@ function SettingsPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setParentId(data.user?.id ?? null);
-      setParentEmail(data.user?.email ?? null);
     });
   }, []);
 
@@ -40,10 +38,10 @@ function SettingsPage() {
   const verify = (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
-    if (!parentEmail) return setErr("No account email found");
-    if (email.trim().toLowerCase() !== parentEmail.toLowerCase()) {
-      return setErr("That's not the grown-up's email on this account");
-    }
+    if (!passKey) return;
+    const stored = localStorage.getItem(passKey);
+    if (!stored) return setUnlocked(true);
+    if (currentPass !== stored) return setErr("Wrong passcode");
     setUnlocked(true);
   };
 
@@ -74,16 +72,19 @@ function SettingsPage() {
       {!unlocked ? (
         <form onSubmit={verify} className="mt-8 rounded-3xl border border-border bg-card p-6">
           <label className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-            Confirm your account email
+            {hasExisting ? "Enter current passcode" : "No passcode set yet — tap unlock to create one"}
           </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@parent.com"
-            className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-3"
-          />
+          {hasExisting && (
+            <input
+              type="password"
+              inputMode="numeric"
+              required
+              value={currentPass}
+              onChange={(e) => setCurrentPass(e.target.value)}
+              placeholder="Current passcode"
+              className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-3 tracking-widest"
+            />
+          )}
           {err && <p className="mt-3 text-sm text-destructive">{err}</p>}
           <button className="mt-4 w-full rounded-full bg-primary py-3 font-display uppercase text-primary-foreground">
             Unlock
